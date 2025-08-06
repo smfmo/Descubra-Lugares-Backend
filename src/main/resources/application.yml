@@ -1,0 +1,14 @@
+spring:
+  application:
+    name: descubra-lugares
+  datasource:
+    url: jdbc:postgresql://localhost:5433/DescubraLugares
+    username: postgres
+    password: 123456
+  jpa:
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        show_sql: true
