@@ -7,7 +7,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.net.URI;
 import java.util.List;
 import java.util.Optional;
@@ -33,53 +32,59 @@ public class CategoriaController {
         Categoria saved = service.save(categoria);
 
         URI location = headerLocationService.gerarHeaderLocation(categoria.getId());
-
-        EntityModel<Categoria> model = EntityModel.of(
+        var model = EntityModel.of(
                 saved,
-                linkTo(methodOn(CategoriaController.class).findById(categoria.getId())).withSelfRel());
+                linkTo(methodOn(CategoriaController.class).findById(categoria.getId())).withSelfRel().withType("GET"),
+                linkTo(methodOn(CategoriaController.class).delete(categoria.getId())).withRel("delete").withType("DELETE"),
+                linkTo(methodOn(CategoriaController.class).update(categoria.getId(), null)).withRel("update").withType("PUT"),
+                linkTo(methodOn(CategoriaController.class).partialUpdate(categoria.getId(), null)).withRel("partial_update").withType("PATCH")
+        );
 
         return ResponseEntity.created(location).body(model);
     }
 
     @GetMapping("/{id}")
-    public EntityModel<Optional<Categoria>> findById(@PathVariable("id") Long id) {
+    public ResponseEntity<EntityModel<Optional<Categoria>>> findById(@PathVariable("id") Long id) {
         var categoria = service.findById(id);
 
-        return EntityModel.of(
+        var model = EntityModel.of(
                 categoria,
-                linkTo(methodOn(CategoriaController.class).findById(id)).withRel("self"),
-                linkTo(methodOn(CategoriaController.class).findAll()).withRel("collection"),
-                linkTo(methodOn(CategoriaController.class).delete(id)).withRel("delete"),
-                linkTo(methodOn(CategoriaController.class).update(id, null)).withRel("update"),
-                linkTo(methodOn(CategoriaController.class).partialUpdate(id, null)).withRel("patch")
+                linkTo(methodOn(CategoriaController.class).findById(id)).withSelfRel().withType("GET"),
+                linkTo(methodOn(CategoriaController.class).findAll()).withRel("collection").withType("GET"),
+                linkTo(methodOn(CategoriaController.class).delete(id)).withRel("delete").withType("DELETE"),
+                linkTo(methodOn(CategoriaController.class).update(id, null)).withRel("update").withType("PUT"),
+                linkTo(methodOn(CategoriaController.class).partialUpdate(id, null)).withRel("patch").withType("PATCH")
         );
+
+        return ResponseEntity.ok(model);
     }
-/*
-     @GetMapping("/{id}")
-    public ResponseEntity<Optional<Categoria>> findById(@PathVariable("id") Long id) {
-        var result = service.findById(id);
-        return ResponseEntity.ok().body(result);
-    }
-*/
+
     @PutMapping("/{id}")
     public ResponseEntity<EntityModel<Categoria>> update(@PathVariable("id") Long id,
                                             @RequestBody Categoria categoria) {
         var categoriaAtualizada = service.update(id, categoria);
 
-        EntityModel<Categoria> model = EntityModel.of(
+        var model = EntityModel.of(
                 categoriaAtualizada,
-                linkTo(methodOn(CategoriaController.class).findById(id)).withRel("self"),
-                linkTo(methodOn(CategoriaController.class).delete(id)).withRel("delete")
+                linkTo(methodOn(CategoriaController.class).findById(id)).withSelfRel().withType("GET"),
+                linkTo(methodOn(CategoriaController.class).delete(id)).withSelfRel().withType("DELETE")
         );
 
         return ResponseEntity.ok(model);
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<Categoria> partialUpdate(@PathVariable("id") Long id,
+    public ResponseEntity<EntityModel<Categoria>> partialUpdate(@PathVariable("id") Long id,
                                            @RequestBody Categoria categoria) {
         var partialUpdate = service.partialUpdate(id, categoria);
-        return ResponseEntity.ok(partialUpdate);
+
+        var model = EntityModel.of(
+                partialUpdate,
+                linkTo(methodOn(CategoriaController.class).findById(id)).withSelfRel().withType("GET"),
+                linkTo(methodOn(CategoriaController.class).delete(id)).withRel("delete").withType("DELETE"),
+                linkTo(methodOn(CategoriaController.class).partialUpdate(id, null)).withRel("patch").withType("PATCH")
+        );
+        return ResponseEntity.ok(model);
     }
 
     @DeleteMapping("/{id}")
