@@ -28,6 +28,10 @@ public class CategoriaService {
         return repository.findById(id);
     }
 
+    public Categoria findByNome(String nome) {
+        return repository.findByNome(nome);
+    }
+
     public List<Categoria> findAll() {
         return repository.findAll();
     }

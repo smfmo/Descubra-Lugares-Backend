@@ -1,6 +1,8 @@
 package com.github.smfmo.descubra_lugares.model;
 import jakarta.persistence.*;
 
+import java.util.List;
+
 @Entity
 @Table(name = "categoria",
         schema = "public")
@@ -15,6 +17,7 @@ public class Categoria {
 
     @Column(name = "descricao")
     private String descricao;
+
 
     public Categoria() {
         // empty
@@ -53,4 +56,5 @@ public class Categoria {
     public void setDescricao(String descricao) {
         this.descricao = descricao;
     }
+
 }
