@@ -4,6 +4,7 @@ import com.github.smfmo.descubra_lugares.model.Categoria;
 import com.github.smfmo.descubra_lugares.service.CategoriaService;
 import com.github.smfmo.descubra_lugares.service.HeaderLocationService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +17,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @RestController
 @RequestMapping("/categorias")
 @RequiredArgsConstructor
+@Slf4j
 public class CategoriaController {
 
     private final CategoriaService service;
@@ -24,12 +26,15 @@ public class CategoriaController {
     @GetMapping
     public ResponseEntity<List<Categoria>> findAll() {
         var resultList = service.findAll();
+        log.info("Buscando as categorias no Angular {}", resultList.toString());
         return ResponseEntity.ok(resultList);
     }
 
     @PostMapping
     public ResponseEntity<EntityModel<Categoria>> save(@RequestBody Categoria categoria) {
         Categoria saved = service.save(categoria);
+
+        log.info("Salvando categoria no Front-End {}", saved.toString());
 
         URI location = headerLocationService.gerarHeaderLocation(categoria.getId());
         var model = EntityModel.of(
@@ -46,6 +51,8 @@ public class CategoriaController {
     @GetMapping("/{id}")
     public ResponseEntity<EntityModel<Optional<Categoria>>> findById(@PathVariable("id") Long id) {
         var categoria = service.findById(id);
+
+        log.info("buscando categoria no Front-End {}", categoria.toString());
 
         var model = EntityModel.of(
                 categoria,
@@ -64,6 +71,8 @@ public class CategoriaController {
                                             @RequestBody Categoria categoria) {
         var categoriaAtualizada = service.update(id, categoria);
 
+        log.info("Atualizando a categoria {}", categoriaAtualizada.toString());
+
         var model = EntityModel.of(
                 categoriaAtualizada,
                 linkTo(methodOn(CategoriaController.class).findById(id)).withSelfRel().withType("GET"),
@@ -78,6 +87,7 @@ public class CategoriaController {
                                            @RequestBody Categoria categoria) {
         var partialUpdate = service.partialUpdate(id, categoria);
 
+        log.info("Atualização parcial da categoria {}", partialUpdate.toString());
         var model = EntityModel.of(
                 partialUpdate,
                 linkTo(methodOn(CategoriaController.class).findById(id)).withSelfRel().withType("GET"),
@@ -89,6 +99,7 @@ public class CategoriaController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable("id") Long id) {
+        log.info("Deletando categoria {}", id.toString());
         service.delete(id);
         return ResponseEntity.noContent().build();
     }
