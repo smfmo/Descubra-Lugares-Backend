@@ -25,6 +25,14 @@ public class Categoria {
         this.descricao = descricao;
     }
 
+    @Override
+    public String toString() {
+        return "\n Categoria: \n" +
+                "id: " + this.id + "\n" +
+                "nome: " + this.nome + "\n" +
+                "descrição: " + this.descricao;
+    }
+
     public Long getId() {
         return id;
     }
