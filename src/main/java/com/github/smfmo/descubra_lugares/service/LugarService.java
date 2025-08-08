@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class LugarService {
@@ -21,10 +22,6 @@ public class LugarService {
         this.categoriaService = categoriaService;
     }
 
-    public List<Lugar> findAll() {
-        return repository.findAll();
-    }
-
     @Transactional
     public Lugar save(Lugar lugar) {
         var categoria = categoriaService.findByNome(lugar.getCategoria().getNome());
@@ -33,4 +30,11 @@ public class LugarService {
         return repository.save(lugar);
     }
 
+    public List<Lugar> findAll() {
+        return repository.findAll();
+    }
+
+    public Optional<Lugar> findById(Long id) {
+        return repository.findById(id);
+    }
 }
