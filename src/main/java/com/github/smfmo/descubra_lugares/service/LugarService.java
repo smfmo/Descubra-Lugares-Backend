@@ -37,4 +37,8 @@ public class LugarService {
     public Optional<Lugar> findById(Long id) {
         return repository.findById(id);
     }
+
+    public List<Lugar> findByFilters(String nome, String categoria) {
+        return repository.buscarPorFiltros(nome, categoria);
+    }
 }

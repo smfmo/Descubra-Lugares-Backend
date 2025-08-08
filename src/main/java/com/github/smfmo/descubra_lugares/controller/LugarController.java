@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 import java.net.URI;
 import java.util.List;
 import java.util.Optional;
-
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
@@ -29,6 +28,17 @@ public class LugarController {
         var resultList = lugarService.findAll();
         log.info("Resultado da Lista {}", resultList.toString());
         return ResponseEntity.ok(resultList);
+    }
+
+    @GetMapping("/filters")
+    public ResponseEntity<List<Lugar>> findByFilters(
+            @RequestParam(value = "nome",
+                    required = false) String nome,
+            @RequestParam(value = "categoria",
+                    required = false) String categoria) {
+
+        var resultFilters = lugarService.findByFilters(nome, categoria);
+        return ResponseEntity.ok(resultFilters);
     }
 
     @PostMapping
