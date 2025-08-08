@@ -5,10 +5,15 @@ import com.github.smfmo.descubra_lugares.service.HeaderLocationService;
 import com.github.smfmo.descubra_lugares.service.LugarService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.net.URI;
 import java.util.List;
+import java.util.Optional;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
 @RequestMapping("/lugares")
@@ -27,12 +32,29 @@ public class LugarController {
     }
 
     @PostMapping
-    public ResponseEntity<Lugar> save(@RequestBody Lugar lugar) {
+    public ResponseEntity<EntityModel<Lugar>> save(@RequestBody Lugar lugar) {
         var saved = lugarService.save(lugar);
         log.info("Lugar salvo com sucesso: {}", saved.toString());
 
         URI location = headerLocationService.gerarHeaderLocation(lugar.getId());
-        return ResponseEntity.created(location).body(saved);
+
+        var model = EntityModel.of(
+                saved,
+                linkTo(methodOn(LugarController.class).findById(lugar.getId())).withSelfRel().withType("GET")
+        );
+        return ResponseEntity.created(location).body(model);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<EntityModel<Optional<Lugar>>> findById(@PathVariable Long id) {
+        var result = lugarService.findById(id);
+        log.info("lugar Correspondente ao id: {}", result.toString());
+
+        var model = EntityModel.of(
+                result,
+                linkTo(methodOn(LugarController.class).findAll()).withSelfRel().withType("GET")
+        );
+        return ResponseEntity.ok(model);
     }
 
 }
