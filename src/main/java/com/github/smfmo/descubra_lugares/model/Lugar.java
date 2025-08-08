@@ -41,6 +41,17 @@ public class Lugar {
         this.avaliacao = avaliacao;
     }
 
+    @Override
+    public String toString() {
+        return "\n Lugar: \n" +
+                "{ \n" + " id: " + this.id + "\n" +
+                "nome: " + this.nome + "\n" +
+                "categoria: " + "\n { " + this.categoria + " }" + "\n" +
+                "localização: " + this.localizacao + "\n" +
+                "url: " + this.url + "\n" +
+                "avaliacao: " + this.avaliacao + " estrelas" + "\n }";
+    }
+
     public Long getId() {
         return id;
     }
