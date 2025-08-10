@@ -36,8 +36,16 @@ public class LugarController {
                     required = false) String nome,
             @RequestParam(value = "categoria",
                     required = false) String categoria) {
-
         var resultFilters = lugarService.findByFilters(nome, categoria);
+        log.info("""
+                Resultado da filtragem:
+                
+                 nome pesquisado = {}
+                
+                 categoria pesquisada = {}
+      
+                 resultado = {}""", nome, categoria, resultFilters.toString()
+        );
         return ResponseEntity.ok(resultFilters);
     }
 
