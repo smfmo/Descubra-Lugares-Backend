@@ -1,0 +1,13 @@
+-- Container da aplicação --
+
+-- Docker CLI --
+docker run --name teste-api-descubra -p 8080:8080
+--network descubra-lugares_postgres-compose-network descubra-lugares-api:1.0
+
+-- Docker compose --
+  application:
+    image: descubra-lugares-api:1.0
+    ports:
+      - "8080:8080"
+    networks:
+      - postgres-compose-network

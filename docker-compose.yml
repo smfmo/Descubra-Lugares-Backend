@@ -1,4 +1,10 @@
 services:
+  application:
+    image: descubra-lugares-api:1.0
+    ports:
+      - "8080:8080"
+    networks:
+      - postgres-compose-network
   database:
     image: postgres:latest
     environment:
